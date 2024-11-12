@@ -1,0 +1,153 @@
+import java.awt.*;
+import java.util.ArrayList;
+import javax.swing.*;
+
+public class App {
+    private final ArrayList<Item> itens = new ArrayList<>();
+    private final ArrayList<String> problemas = new ArrayList<>(); 
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(App::new);
+    }
+
+    public App() {
+        JFrame frame = new JFrame("Sistema de Gerenciamento de Itens");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        
+        JButton btnCadastrar = new JButton("Cadastrar Item");
+        JButton btnBuscar = new JButton("Buscar Item");
+        JButton btnListar = new JButton("Listar Itens");
+        JButton btnProblemas = new JButton("Problemas"); 
+
+        
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 1, 10, 10));
+        panel.add(btnCadastrar);
+        panel.add(btnBuscar);
+        panel.add(btnListar);
+        panel.add(btnProblemas);
+        frame.add(panel);
+
+        
+        btnCadastrar.addActionListener(e -> cadastrarItem());
+
+        
+        btnBuscar.addActionListener(e -> buscarItem());
+
+        
+        btnListar.addActionListener(e -> listarItens());
+
+       
+        btnProblemas.addActionListener(e -> mostrarProblemas());
+
+        
+        frame.setLocationRelativeTo(null); 
+        frame.setVisible(true);
+    }
+
+    private void cadastrarItem() {
+       
+        String[] Armazenagem = {"Pallet Fechado", "Pallet Misto", "Sem Armazenagem"};
+        String[] tipoVendas = {"caixa fechada", "só unidade", "outro"};
+
+        
+        JComboBox<String> tipoComboBox = new JComboBox<>(Armazenagem);
+        JComboBox<String> tipoVendaComboBox = new JComboBox<>(tipoVendas);
+        JTextField nomeField = new JTextField();
+        JTextField valorVendaField = new JTextField();
+        JTextField unidadesPorCaixaField = new JTextField();
+
+        Object[] message = {
+            "Nome:", nomeField,
+            "Tipo:", tipoComboBox,
+            "Valor de Venda:", valorVendaField,
+            "Unidades por Caixa (se aplicável):", unidadesPorCaixaField,
+            "Tipo de Venda:", tipoVendaComboBox
+        };
+
+        int option = JOptionPane.showConfirmDialog(null, message, "Cadastrar Item", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String nome = nomeField.getText();
+            String tipo = (String) tipoComboBox.getSelectedItem(); 
+            double valorVenda = Double.parseDouble(valorVendaField.getText());
+            int unidadesPorCaixa = unidadesPorCaixaField.getText().isEmpty() ? 0 : Integer.parseInt(unidadesPorCaixaField.getText());
+            String tipoVenda = (String) tipoVendaComboBox.getSelectedItem(); 
+
+            int id = itens.size() + 1;
+            Item item = new Item(id, nome, tipo, valorVenda, unidadesPorCaixa, tipoVenda);
+            itens.add(item);
+
+            JOptionPane.showMessageDialog(null, "Item cadastrado com sucesso!");
+            recomendarArmazenagem(item); 
+        }
+    }
+
+    private void recomendarArmazenagem(Item item) {
+        String recomendacao;
+        if (item.getTipoVenda().equalsIgnoreCase("caixa fechada")) {
+            recomendacao = "Recomendação para " + item.getNome() + ": Armazenagem por pallets fechados e sem endereço físico.";
+        } else if (item.getTipoVenda().equalsIgnoreCase("só unidade")) {
+            recomendacao = "Recomendação para " + item.getNome() + ": Armazenagem em pallet misto com endereço físico.";
+        } else {
+            recomendacao = "Recomendação para " + item.getNome() + ": Armazenagem de pallet fechado e endereço físico.";
+        }
+        problemas.add(recomendacao); 
+    }
+
+    private void buscarItem() {
+        String nome = JOptionPane.showInputDialog("Digite o nome do item para buscar:");
+        if (nome != null) {
+            StringBuilder resultado = new StringBuilder();
+            for (Item item : itens) {
+                if (item.getNome().equalsIgnoreCase(nome)) {
+                    resultado.append("ID: ").append(item.getId())
+                            .append("\nNome: ").append(item.getNome())
+                            .append("\nTipo: ").append(item.getTipo())
+                            .append("\nValor de Venda: ").append(item.getValorVenda())
+                            .append("\nUnidades por Caixa: ").append(item.getUnidadesPorCaixa())
+                            .append("\nTipo de Venda: ").append(item.getTipoVenda())
+                            .append("\n-------------------------\n");
+                }
+            }
+
+            if (resultado.length() == 0) {
+                JOptionPane.showMessageDialog(null, "Item não encontrado.");
+            } else {
+                JOptionPane.showMessageDialog(null, resultado.toString());
+            }
+        }
+    }
+
+    private void listarItens() {
+        StringBuilder resultado = new StringBuilder("Lista de Itens:\n\n");
+        for (Item item : itens) {
+            resultado.append("ID: ").append(item.getId())
+                    .append("\nNome: ").append(item.getNome())
+                    .append("\nTipo: ").append(item.getTipo())
+                    .append("\nValor de Venda: ").append(item.getValorVenda())
+                    .append("\nUnidades por Caixa: ").append(item.getUnidadesPorCaixa())
+                    .append("\nTipo de Venda: ").append(item.getTipoVenda())
+                    .append("\n-------------------------\n");
+        }
+
+        JOptionPane.showMessageDialog(null, resultado.toString());
+    }
+
+    private void mostrarProblemas() {
+        if (problemas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Nenhum problema ou recomendação de armazenamento.", "Problemas", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            StringBuilder problemaTexto = new StringBuilder("Recomendações de Armazenamento:\n\n");
+            for (String problema : problemas) {
+                problemaTexto.append(problema).append("\n\n");
+            }
+            JOptionPane.showMessageDialog(null, problemaTexto.toString(), "Problemas", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    public ArrayList<Item> getItens() {
+        return itens;
+    }
+}

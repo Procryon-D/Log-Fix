@@ -1,0 +1,65 @@
+public class Item {
+    private int id;
+    private String nome;
+    private String tipo;
+    private double valorVenda;
+    private int unidadesPorCaixa;
+    private String tipoVenda;
+
+    public Item(int id, String nome, String tipo, double valorVenda, int unidadesPorCaixa, String tipoVenda) {
+        this.id = id;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.valorVenda = valorVenda;
+        this.unidadesPorCaixa = unidadesPorCaixa;
+        this.tipoVenda = tipoVenda;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public double getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(double valorVenda) {
+        this.valorVenda = valorVenda;
+    }
+
+    public int getUnidadesPorCaixa() {
+        return unidadesPorCaixa;
+    }
+
+    public void setUnidadesPorCaixa(int unidadesPorCaixa) {
+        this.unidadesPorCaixa = unidadesPorCaixa;
+    }
+
+    public String getTipoVenda() {
+        return tipoVenda;
+    }
+
+    public void setTipoVenda(String tipoVenda) {
+        this.tipoVenda = tipoVenda;
+    }
+}
